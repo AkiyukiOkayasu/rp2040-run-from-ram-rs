@@ -5,10 +5,8 @@
 #![no_main]
 
 use bsp::entry;
-use defmt::*;
-use defmt_rtt as _;
 use embedded_hal::digital::v2::OutputPin;
-use panic_probe as _;
+use panic_halt as _;
 
 // Provide an alias for our BSP so we can switch targets quickly.
 // Uncomment the BSP you included in Cargo.toml, the rest of the code does not need to change.
@@ -22,9 +20,14 @@ use bsp::hal::{
     watchdog::Watchdog,
 };
 
+#[link_section = ".boot2"]
+#[no_mangle]
+#[used]
+pub static BOOT2_FIRMWARE: [u8; 256] = rp2040_boot2::BOOT_LOADER_RAM_MEMCPY;
+
 #[entry]
 fn main() -> ! {
-    info!("Program start");
+    // info!("Program start");
     let mut pac = pac::Peripherals::take().unwrap();
     let core = pac::CorePeripherals::take().unwrap();
     let mut watchdog = Watchdog::new(pac.WATCHDOG);
@@ -32,7 +35,7 @@ fn main() -> ! {
 
     // External high-speed crystal on the pico board is 12Mhz
     let external_xtal_freq_hz = 12_000_000u32;
-    let clocks = init_clocks_and_plls(
+    let _clocks = init_clocks_and_plls(
         external_xtal_freq_hz,
         pac.XOSC,
         pac.CLOCKS,
@@ -44,7 +47,7 @@ fn main() -> ! {
     .ok()
     .unwrap();
 
-    let mut delay = cortex_m::delay::Delay::new(core.SYST, clocks.system_clock.freq().to_Hz());
+    let mut delay = cortex_m::delay::Delay::new(core.SYST, 125_000_000);
 
     let pins = bsp::Pins::new(
         pac.IO_BANK0,
@@ -61,10 +64,10 @@ fn main() -> ! {
     let mut led_pin = pins.led.into_push_pull_output();
 
     loop {
-        info!("on!");
+        // info!("on!");
         led_pin.set_high().unwrap();
         delay.delay_ms(500);
-        info!("off!");
+        // info!("off!");
         led_pin.set_low().unwrap();
         delay.delay_ms(500);
     }
