@@ -43,6 +43,7 @@ fn main() -> ! {
     .unwrap();
 
     let mut delay = cortex_m::delay::Delay::new(core.SYST, 125_000_000);
+    delay.delay_ms(1000);
 
     let pins = bsp::Pins::new(
         pac.IO_BANK0,
