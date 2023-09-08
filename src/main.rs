@@ -13,12 +13,7 @@ use panic_halt as _;
 use rp_pico as bsp;
 // use sparkfun_pro_micro_rp2040 as bsp;
 
-use bsp::hal::{
-    clocks::{init_clocks_and_plls, Clock},
-    pac,
-    sio::Sio,
-    watchdog::Watchdog,
-};
+use bsp::hal::{clocks::init_clocks_and_plls, pac, sio::Sio, watchdog::Watchdog};
 
 #[link_section = ".boot2"]
 #[no_mangle]
