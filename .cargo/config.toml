@@ -6,5 +6,7 @@ runner = "elf2uf2-rs -d"
 #runner = "probe-run --chip RP2040"
 #runner = "picotool load -x -t elf"
 rustflags = [
-  "-C", "link-arg=-Tlink.ram.x", "-C", "link-arg=--nmagic",
+  "-C", "linker=flip-link",
+  "-C", "link-arg=--nmagic",
+  "-C", "link-arg=-Tlink.x",  
 ]
